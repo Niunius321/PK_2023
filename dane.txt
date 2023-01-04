@@ -1,0 +1,6 @@
+Komputer1 Komputer2 220.0
+Komputer1 Komputer3 100.0
+Komputer1 Komputer4 150.0
+Komputer2 Komputer3 175.0
+Komputer2 Komputer4 125.0
+Komputer3 Komputer4 160.0
