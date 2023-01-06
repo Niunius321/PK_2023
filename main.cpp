@@ -1,25 +1,33 @@
 #include <iostream>
 #include <fstream>
-
+#include <vector>
 
 using namespace std;
 
+struct{
+    int poziom;
+    string dane_wej, dane_wyj;
+} dane;
+
+void Pobieranie(){
+    cout<<"Podaj plik wejsciowy: ";
+    cin>>dane.dane_wej;
+    cout<<"Podaj plik wyjsciowy: ";
+    cin>>dane.dane_wyj;
+    cout<<"Podaj poziom: ";
+    cin>>dane.poziom;
+}
 
 void Liczenie(){
-    string dane_wej, dane_wyj;
-    int poziom;
-    cout<<"Podaj plik wejsciowy:"<<endl;
-    cin>>dane_wej;
-    cout<<"Podaj plik wyjsciowy:"<<endl;
-    cin>>dane_wyj;
-    cout<<"Podaj poziom niezawodnosci:"<<endl;
-    cin>>poziom;
-    ifstream dane(dane_wej);
+    Pobieranie();
+    ifstream dane1(dane.dane_wej);
     string linie;
-    while( getline (dane,linie)){
-        cout<<linie<<endl;
+    vector < string > tab;
+    while( getline (dane1,linie)){
+        tab.push_back(linie);
     }
-    dane.close();
+    cout<<tab.size();
+    dane1.close();
 }
 
 
