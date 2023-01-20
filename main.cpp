@@ -1,37 +1,50 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
+#include <map>
+#include <sstream>
+#include <set>
+#include <string>
+#include <list>
+
 
 using namespace std;
 
 struct{
     int poziom;
-    string dane_wej, dane_wyj;
+    string wej, wyj;
 } dane;
 
 void Pobieranie(){
     cout<<"Podaj plik wejsciowy: ";
-    cin>>dane.dane_wej;
+    cin>>dane.wej;
     cout<<"Podaj plik wyjsciowy: ";
-    cin>>dane.dane_wyj;
+    cin>>dane.wyj;
     cout<<"Podaj poziom: ";
     cin>>dane.poziom;
 }
+typedef std::map<std::string, std::set<std::pair<std::string, double> > > Graph;
 
-void Liczenie(){
-    Pobieranie();
-    ifstream dane1(dane.dane_wej);
-    string linie;
-    vector < string > tab;
-    while( getline (dane1,linie)){
-        tab.push_back(linie);
+Graph Pobieranie_plik(const std::string& plik){
+    Graph graph;
+    std::ifstream in(plik);
+    if(in){
+        std::string line;
+        while(std::getline(in, line)){
+            std::stringstream komputer(line);
+            std::string komputer1, komputer2;
+            double lenght;
+            if(!(komputer>>komputer1)) continue;
+            if(!(komputer>>komputer2)) continue;
+            if(!(komputer>>lenght)) continue;
+            graph[komputer1].insert({komputer2, lenght});
+            graph[komputer2].insert({komputer1, lenght});
+        }
     }
-    cout<<tab.size();
-    dane1.close();
+    in.close();
 }
 
-
 int main(){
-    Liczenie();
+    Pobieranie();
+    auto graph = Pobieranie_plik(dane.wej);
     return 0;
 }
