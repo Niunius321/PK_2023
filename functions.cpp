@@ -22,124 +22,82 @@ Graph Pobieranie_plik(const std::string& plik){
 
 
 
-std::vector<double> Prima(const Graph graph){
-    std::map<std::string, std::map<std::string, int> > graf;
-    std::vector<double> wynik;
-    int w=0, k=0, koszt;
-    std::map<std::string, int> waga,odwiedzone;
+std::vector<std::pair<std::string, std::string>> Kruskal(Graph graph,int poziom){
+    std::vector<std::pair<double, std::pair<std::string,std::string>>> poloczenia;
+    std::vector<std::pair<std::string, std::string>> wynik;
     for(auto el : graph){
-        w+=1;
-        waga[el.first]=99999999;
-        for(auto el1: el.second){
-            k+=1;
-            graf[el.first][el1.first]=el1.second;
-            graf[el1.first][el.first]=el1.second;
+        for(auto el1 : el.second){
+            poloczenia.push_back({el1.second,{el.first,el1.first}});
         }
+        graph[el.first].clear();
     }
-    waga[graph.begin()->first]=0;
-    odwiedzone[graph.begin()->first]=1;
-    std::string wiersz = graph.begin()->first;
-    int wierzcholki=1;
-        while(wierzcholki<w){
-            for(auto el : graph){
-                if(odwiedzone[el.first]==0){
-                    if(waga[el.first]>graf[wiersz][el.first])
-                    {
-                        waga[el.first]=graf[wiersz][el.first];
-                    }
-                }
-            }
-            
-            koszt=99999999;
-            for(auto el : graph)
-            {
-                if(odwiedzone[el.first]==0)
-                {
-                    if(waga[el.first]<koszt)
-                    {
-                        koszt=waga[el.first];
-                        wiersz=el.first;
-                    }
-                }
-            }
-            wynik.push_back(koszt);
-            odwiedzone[wiersz]=1;
-            wierzcholki++;
-            
+    std::sort(poloczenia.begin(), poloczenia.end());
+    auto przypadek0 = 0;
+    for(auto i = 0; i<poloczenia.size();i++){
+        auto komp1 = poloczenia[i].second.first;
+        auto komp2 = poloczenia[i].second.second;
+        auto cena = poloczenia[i].first;
+        if( komp1==poloczenia[i-1].second.second && komp2==poloczenia[i-1].second.first){
+            continue;
         }
+        else{
+            if(graph[komp1].size()<poziom && graph[komp2].size()<poziom){
+                graph[komp1].insert({komp2,cena});
+                graph[komp2].insert({komp1,cena});
+                wynik.push_back({komp1,komp2});
+                
+            }
+            else if(poziom==1){
+                if(przypadek0==0){
+                    graph[komp1].insert({komp2,cena});
+                    graph[komp2].insert({komp1,cena});
+                    wynik.push_back({komp1,komp2});
+                    przypadek0++;
+                }
+            }
+        }
+        
+    }
+
     return wynik;
 }
-    
 
 
-void Zapisz(const Graph& graph, const std::string wyj, const int poziom){
+
+void Zapisz(Graph& graph, const std::string wyj,int poziom){
+    poziom +=1;
     std::ofstream out(wyj);
     std::map<std::string,int> poloczenia;
     if(out){
-        auto wynik = Prima(graph);
-        int a=0;
-        if(poziom==0){
-            for(auto el : graph){
-                        for(auto el1: el.second){
+        auto wynik = Kruskal(graph,poziom);
+        std::sort(wynik.begin(), wynik.end());
+        for(auto el : wynik){
+            out<<el.first<<" "<<el.second<<std::endl;
+        }
 
-                            if(a>wynik.size()){
-                                continue;
-                            }
-                            else{
-                                if(el1.second==wynik[a]){
-                                    poloczenia[el.first]+=1;
-                                    poloczenia[el1.first]+=1;
-                                    out<<el.first<<" "<<el1.first<<std::endl;
-                                    a++;
-                                }
-                            }
-                        }
-                    }
-        }
-        else{
-                for(auto el : graph){
-                            for(auto el1: el.second){
-                                if(a>wynik.size()){
-                                    continue;
-                                }
-                                else{
-                                    if(el1.second==wynik[a]){
-                                        poloczenia[el.first]+=1;
-                                        poloczenia[el1.first]+=1;
-                                        a++;
-                                    }
-                                }
-                            }
-                        }
-            for(auto el : graph){
-                if(poloczenia[el.first]!=(poziom+1)){
-                    for(auto el1: el.second){
-                        
-                    }
-                }
-            }
-            
-        }
     }
+
+            
     out.close();
 }
 
 Args parseArgs(int argc, char* argv[]){
     Args arg;
 
-    if(argc != 7) throw std::runtime_error("Not enough arguments provided");
+        
+    if(argc != 7) throw std::runtime_error("Za malo agrumentow");
 
     for(int i = 0; i < argc; i++){
         std::string val = argv[i];
 
         if(val == "-i"){
-            if(i == argc-1) throw std::runtime_error("No input file provided");
+            if(i == argc-1) throw std::runtime_error("Nie podano pliku wejsciowego");
             arg.input = argv[i+1];
         }else if(val == "-t"){
-            if(i == argc-1) throw std::runtime_error("No tree file provided");
+            if(i == argc-1) throw std::runtime_error("Nie podano pliku wyjsciowego");
             arg.output = argv[i+1];
         }else if(val == "-o"){
-            if(i == argc-1) throw std::runtime_error("No file file provided");
+            if(i == argc-1) throw std::runtime_error("Nie podano poziomu");
             arg.poziom = argv[i+1];
         }
     }
