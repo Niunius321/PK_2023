@@ -54,7 +54,6 @@ Graph Kruskal(Graph graph,int poziom){
                 }
             }
             else{
-                if(liczba)
                     continue;
             }
         }
