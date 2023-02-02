@@ -22,17 +22,19 @@ Graph Pobieranie_plik(const std::string& plik){
 
 
 
-std::vector<std::pair<std::string, std::string>> Kruskal(Graph graph,int poziom){
+Graph Kruskal(Graph graph,int poziom){
     std::vector<std::pair<double, std::pair<std::string,std::string>>> poloczenia;
     std::vector<std::pair<std::string, std::string>> wynik;
+    int liczba = 0;
     for(auto el : graph){
         for(auto el1 : el.second){
             poloczenia.push_back({el1.second,{el.first,el1.first}});
+            liczba++;
         }
-        graph[el.first].clear();
     }
+    double mini = liczba/graph.size();
     std::sort(poloczenia.begin(), poloczenia.end());
-    auto przypadek0 = 0;
+    std::reverse(poloczenia.begin(), poloczenia.end());
     for(auto i = 0; i<poloczenia.size();i++){
         auto komp1 = poloczenia[i].second.first;
         auto komp2 = poloczenia[i].second.second;
@@ -41,38 +43,37 @@ std::vector<std::pair<std::string, std::string>> Kruskal(Graph graph,int poziom)
             continue;
         }
         else{
-            if(graph[komp1].size()<poziom && graph[komp2].size()<poziom){
-                graph[komp1].insert({komp2,cena});
-                graph[komp2].insert({komp1,cena});
-                wynik.push_back({komp1,komp2});
-                
-            }
-            else if(poziom==1){
-                if(przypadek0==0){
-                    graph[komp1].insert({komp2,cena});
-                    graph[komp2].insert({komp1,cena});
-                    wynik.push_back({komp1,komp2});
-                    przypadek0++;
+            if(liczba>graph.size()-1){
+                if(graph[komp1].size()>poziom && graph[komp2].size()>poziom){
+                    graph[komp1].erase({komp2,cena});
+                    graph[komp2].erase({komp1,cena});
+                    liczba-=mini;
+                }
+                else{
+                    continue;
                 }
             }
+            else{
+                if(liczba)
+                    continue;
+            }
         }
-        
     }
-
-    return wynik;
+    return graph;
 }
 
 
 
 void Zapisz(Graph& graph, const std::string wyj,int poziom){
-    poziom +=1;
     std::ofstream out(wyj);
     std::map<std::string,int> poloczenia;
     if(out){
-        auto wynik = Kruskal(graph,poziom);
-        std::sort(wynik.begin(), wynik.end());
-        for(auto el : wynik){
-            out<<el.first<<" "<<el.second<<std::endl;
+        graph = Kruskal(graph,poziom);
+        for(auto el : graph){
+            for (auto el1 : el.second) {
+                graph[el1.first].erase({el.first,el1.second});
+                out<<el.first<<" "<<el1.first<<std::endl;
+            }
         }
 
     }
@@ -93,10 +94,10 @@ Args parseArgs(int argc, char* argv[]){
         if(val == "-i"){
             if(i == argc-1) throw std::runtime_error("Nie podano pliku wejsciowego");
             arg.input = argv[i+1];
-        }else if(val == "-t"){
+        }else if(val == "-o"){
             if(i == argc-1) throw std::runtime_error("Nie podano pliku wyjsciowego");
             arg.output = argv[i+1];
-        }else if(val == "-o"){
+        }else if(val == "-n"){
             if(i == argc-1) throw std::runtime_error("Nie podano poziomu");
             arg.poziom = argv[i+1];
         }
