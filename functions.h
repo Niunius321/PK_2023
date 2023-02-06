@@ -6,11 +6,17 @@
 #include <vector>
 #include <algorithm>
 
+/**
+ * @brief Funkcja odpowiedzialna za przetwarzanie argumentów podanych przez użytkownika podczas uruchomienia programu. Funkcja iteruje przez argumenty i sprawdza, czy są one odpowiedniej postaci (np. "-i" i kolejny argument jest nazwą pliku wejściowego). Jeśli brakuje jakiegoś argumentu lub są one niepoprawne, funkcja wyświetla informację o poprawnym użyciu i zwraca pusty wektor.
+ * @param argc Liczba argumentów przekazanych do programu
+ * @param argv Tablica łańcuchów znaków, reprezentujących argumenty przekazane do programu
+ * @return Vector z danymi wyprowadzonymi przez użytkownika
+ */
 
+std::vector<std::string> Args(
+    int argc,
+    char* argv[]);
 
-struct Args{
-    std::string input, output, poziom;
-};
 
 /**
  * @brief Funkcja odpowiedzialna za przetwarzanie argumentów podanych przez użytkownika podczas uruchomienia programu. Funkcja iteruje przez argumenty i sprawdza, czy są one odpowiedniej postaci (np. "-i" i kolejny argument jest nazwą pliku wejściowego). Jeśli brakuje jakiegoś argumentu lub są one niepoprawne, funkcja wyświetla informację o poprawnym użyciu i zwraca pusty wektor.
@@ -19,8 +25,9 @@ struct Args{
  * @return Vector z danymi wyprowadzonymi przez użytkownika
  */
 
-Args parseArgs(int argc, char* argv[]);
-
+std::vector<std::string> userData (
+    int argc,
+    char* argv[]);
 
 /**
     *@brief Definicja Grafu. Składa się on z mapy, której kluczem jest nazwa miasta. Kolejną częścią jest set składający się z pary, która przechowuje wszystkie połączenia wraz z jej odległościami do danego miasta.
