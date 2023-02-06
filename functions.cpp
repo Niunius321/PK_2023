@@ -81,26 +81,30 @@ void Zapisz(Graph& graph, const std::string wyj,int poziom){
     out.close();
 }
 
-Args parseArgs(int argc, char* argv[]){
-    Args arg;
+std::vector<std::string> userData (int argc, char* argv[]){
+    std::string input_file;
+    std::string output_file;
+    std::string start_city;
 
-        
-    if(argc != 7) throw std::runtime_error("Za malo agrumentow");
-
-    for(int i = 0; i < argc; i++){
-        std::string val = argv[i];
-
-        if(val == "-i"){
-            if(i == argc-1) throw std::runtime_error("Nie podano pliku wejsciowego");
-            arg.input = argv[i+1];
-        }else if(val == "-o"){
-            if(i == argc-1) throw std::runtime_error("Nie podano pliku wyjsciowego");
-            arg.output = argv[i+1];
-        }else if(val == "-n"){
-            if(i == argc-1) throw std::runtime_error("Nie podano poziomu");
-            arg.poziom = argv[i+1];
+    for (int i = 1; i < argc; i++) {
+        std::string element = argv[i];
+        if (element == "-i" && i + 1 < argc){
+            input_file = argv[i + 1];
+        }else if (element == "-o" && i + 1 < argc){
+            output_file = argv[i + 1];
+        }else if (element == "-s" && i + 1 < argc){
+            start_city = argv[i + 1];
         }
     }
-    return arg;
+
+    if (input_file.empty() || output_file.empty() || start_city.empty()) {
+        std::cout << "Usage: " << argv[0] << " -i input_file -o output_file -s start_city" << std::endl;
+
+        std::vector<std::string> result = {};
+        return result;
+    }
+
+    std::vector<std::string> result = {input_file, output_file, start_city};
+    return result;
 }
 
