@@ -2,11 +2,11 @@
 
 using namespace std;
 
-
+int argc, char* argv[];
 int main(){
-        //Args args = parseArgs(argc, argv);
-        auto graph = Pobieranie_plik("/Users/oskarukleja/Desktop/projektt/projektt/../../studia/ppk/projekt/dane.txt");
-            Zapisz(graph, "/Users/oskarukleja/Desktop/projektt/projektt/wynik.txt", stoi("1"));
+        Args args = parseArgs(argc, argv);
+        auto graph = Pobieranie_plik(data[0]);
+            Zapisz(graph, data[1], stoi(data[2]));
     return 0;
 }
 
